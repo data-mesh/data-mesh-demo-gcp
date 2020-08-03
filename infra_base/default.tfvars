@@ -1,1 +1,0 @@
-project = "data-mesh-demo"

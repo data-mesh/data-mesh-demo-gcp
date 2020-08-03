@@ -12,6 +12,6 @@ terraform {
 
 provider "google" {
   credentials = file("account.json")
-  project     = var.project 
+  project     = var.project_name 
 }
 

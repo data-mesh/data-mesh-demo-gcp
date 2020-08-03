@@ -1,7 +1,7 @@
 resource "google_project_service" "service" {
   service = "iam.googleapis.com" 
 
-  project = var.project 
+  project = var.project_name
   disable_on_destroy = false
 }
 
@@ -55,7 +55,7 @@ data "google_iam_policy" "dp-a-admin" {
   binding {
     role = "roles/storage.admin"
     members = [
-      "serviceAccount:data-mesh-base-infra-provision@data-mesh-demo.iam.gserviceaccount.com",
+      "serviceAccount:data-mesh-base-infra-provision@${var.project_name}.iam.gserviceaccount.com",
       "serviceAccount:${google_service_account.service_account-dp-a.email}",
     ]
   }
@@ -72,19 +72,19 @@ resource "google_storage_bucket_iam_policy" "dp-a-dataflow-temp-sb-policy" {
 }
 
 resource "google_project_iam_member" "dp-a-sa-bq-job-user" {
-  project = var.project 
+  project = var.project_name
   role    = "roles/bigquery.jobUser"
   member  = "serviceAccount:${google_service_account.service_account-dp-a.email}"
 }
 
 resource "google_project_iam_member" "dp-a-sa-dataflow-developer" {
-  project = var.project 
+  project = var.project_name
   role    = "roles/dataflow.developer"
   member  = "serviceAccount:${google_service_account.service_account-dp-a.email}"
 }
 
 resource "google_project_iam_member" "dp-a-sa-compute-viewer" {
-  project = var.project 
+  project = var.project_name
   role    = "roles/compute.viewer"
   member  = "serviceAccount:${google_service_account.service_account-dp-a.email}"
 }
@@ -92,7 +92,7 @@ resource "google_project_iam_member" "dp-a-sa-compute-viewer" {
 resource "google_storage_bucket_iam_member" "df-A-dataflow-temp-admin" {
   bucket = google_storage_bucket.dp-a-dataflow-temp.name
   role = "roles/storage.objectAdmin"
-  member = "serviceAccount:64709029339-compute@developer.gserviceaccount.com"
+  member = "serviceAccount:${var.project_id}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_project_iam_member" "dp-b-sa-bq-job-user" {
