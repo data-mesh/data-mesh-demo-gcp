@@ -6,6 +6,14 @@
 mvn compile
 ```
 
+## Get Google Credentials 
+
+To get the keys for *data product A* with service account `dp-a-sa@data-mesh-demo.iam.gserviceaccount.com` go to `Service Accounts` in `IAM & Admin`
+
+Select *Service Account for Data Product A* and generate a json key
+
+Place in `keys` folder
+
 ## Run DataFlow
 
 Use data product 1 service account to read from a public bigquery dataset and write to big query dataset owned by this data product 1
