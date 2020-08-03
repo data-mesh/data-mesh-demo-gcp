@@ -24,6 +24,7 @@ resource "google_bigquery_dataset" "dataset-dp-a" {
   location                    = "US"
   default_table_expiration_ms = 3600000
   default_partition_expiration_ms = 5184000000
+  delete_contents_on_destroy = true
 
   access {
     role          = "OWNER"
