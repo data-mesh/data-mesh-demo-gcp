@@ -140,3 +140,21 @@ resource "google_bigquery_dataset" "dataset-dp-b" {
     user_by_email = google_service_account.service_account-dp-b.email
   }
 }
+
+# Default VPC network for dataflow firewall rull
+resource "google_compute_firewall" "default" {
+  name    = "dataflow-traffic"
+  network = google_compute_network.default.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["12345-12346"]
+  }
+
+  target_tags = ["dataflow"]
+}
+
+# Allow ingress of dataflow
+resource "google_compute_network" "default" {
+  name = "default"
+}
