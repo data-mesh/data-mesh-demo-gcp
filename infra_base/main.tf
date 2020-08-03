@@ -66,9 +66,35 @@ resource "google_storage_bucket_iam_policy" "dp-a-sb-policy" {
   policy_data = data.google_iam_policy.dp-a-admin.policy_data
 }
 
+data "google_iam_policy" "dp-a-temp-sb-policy" {
+  binding {
+    role = "roles/storage.objectAdmin"
+    members = [
+      "serviceAccount:${var.project_id}-compute@developer.gserviceaccount.com",
+      # So that we can destroy the temp storage account if needed via terraform destroy
+      "serviceAccount:data-mesh-base-infra-provision@${var.project_name}.iam.gserviceaccount.com",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.objectCreator"
+    members = [
+      "serviceAccount:${google_service_account.service_account-dp-a.email}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.admin"
+    members = [
+      "serviceAccount:data-mesh-base-infra-provision@${var.project_name}.iam.gserviceaccount.com",
+      "serviceAccount:${google_service_account.service_account-dp-a.email}",
+    ]
+  }
+}
+
 resource "google_storage_bucket_iam_policy" "dp-a-dataflow-temp-sb-policy" {
   bucket = google_storage_bucket.dp-a-dataflow-temp.name
-  policy_data = data.google_iam_policy.dp-a-admin.policy_data
+  policy_data = data.google_iam_policy.dp-a-temp-sb-policy.policy_data
 }
 
 resource "google_project_iam_member" "dp-a-sa-bq-job-user" {
@@ -87,12 +113,6 @@ resource "google_project_iam_member" "dp-a-sa-compute-viewer" {
   project = var.project_name
   role    = "roles/compute.viewer"
   member  = "serviceAccount:${google_service_account.service_account-dp-a.email}"
-}
-
-resource "google_storage_bucket_iam_member" "df-A-dataflow-temp-admin" {
-  bucket = google_storage_bucket.dp-a-dataflow-temp.name
-  role = "roles/storage.objectAdmin"
-  member = "serviceAccount:${var.project_id}-compute@developer.gserviceaccount.com"
 }
 
 resource "google_project_iam_member" "dp-b-sa-bq-job-user" {
