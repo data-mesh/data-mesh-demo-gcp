@@ -1,0 +1,26 @@
+{
+  "type": "record",
+  "name": "Dish",
+  "fields": [{
+    "name": "id",
+    "type": "int"
+  }, {
+    "name": "menu_id",
+    "type": "int"
+  }, {
+    "name": "page_number",
+    "type": "string"
+  }, {
+       "name": "image_id",
+       "type": "string"
+  }, {
+       "name": "full_height",
+       "type": "string"
+  }, {
+       "name": "full_width",
+       "type": "string"
+  }, {
+       "name": "uuid",
+       "type": "string"
+  }]
+}

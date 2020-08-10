@@ -1,0 +1,32 @@
+{
+  "type": "record",
+  "name": "Dish",
+  "fields": [{
+    "name": "id",
+    "type": "long"
+  }, {
+    "name": "name",
+    "type": "string"
+  }, {
+    "name": "description",
+    "type": "string"
+  }, {
+       "name": "menus_appeared",
+       "type": "string"
+  }, {
+       "name": "times_appeared",
+       "type": "long"
+  }, {
+       "name": "first_appeared",
+       "type": "long"
+  }, {
+       "name": "last_appeared",
+       "type": "long"
+  }, {
+       "name": "lowest_price",
+       "type": "double"
+  }, {
+       "name": "highest_price",
+       "type": "double"
+  }]
+}

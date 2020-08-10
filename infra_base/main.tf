@@ -37,6 +37,12 @@ resource "google_bigquery_dataset" "dataset-dp-a" {
   }
 }
 
+resource "google_storage_bucket" "dp-a-output-sb" {
+  name          = "dp-a-output"
+  location      = "US"
+  force_destroy = true
+}
+
 # DP1 Input port
 resource "google_storage_bucket" "dp-a-sb" {
   name          = "dp-a-input"
@@ -64,6 +70,11 @@ data "google_iam_policy" "dp-a-admin" {
 
 resource "google_storage_bucket_iam_policy" "dp-a-sb-policy" {
   bucket = google_storage_bucket.dp-a-sb.name
+  policy_data = data.google_iam_policy.dp-a-admin.policy_data
+}
+
+resource "google_storage_bucket_iam_policy" "dp-a-output-sb-policy" {
+  bucket = google_storage_bucket.dp-a-output-sb.name
   policy_data = data.google_iam_policy.dp-a-admin.policy_data
 }
 

@@ -1,0 +1,32 @@
+{
+  "type": "record",
+  "name": "MenuItem",
+  "fields": [{
+    "name": "id",
+    "type": "int"
+  }, {
+    "name": "menu_page_id",
+    "type": "int"
+  }, {
+    "name": "price",
+    "type": "string"
+  }, {
+       "name": "high_price",
+       "type": "string"
+  }, {
+       "name": "dish_id",
+       "type": "int"
+  }, {
+       "name": "created_at",
+       "type": "string"
+  }, {
+       "name": "updated_at",
+       "type": "string"
+  }, {
+       "name": "xpos",
+       "type": "string"
+  }, {
+       "name": "ypos",
+       "type": "string"
+  }]
+}
