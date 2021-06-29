@@ -37,15 +37,22 @@ resource "google_bigquery_dataset" "dataset-dp-a" {
   }
 }
 
+resource "random_string" "random_dp_id" {
+  length           = 16
+  special          = false
+  upper = false
+}
+
 resource "google_storage_bucket" "dp-a-output-sb" {
-  name          = "dp-a-output"
+  name          = "dp-a-output-${random_string.random_dp_id.id}"
   location      = "US"
   force_destroy = true
 }
 
+
 # DP1 Input port
 resource "google_storage_bucket" "dp-a-sb" {
-  name          = "dp-a-input"
+  name          = "dp-a-input-${random_string.random_dp_id.id}"
   location      = "US"
   force_destroy = true
 }
@@ -134,7 +141,7 @@ resource "google_project_iam_member" "dp-b-sa-bq-job-user" {
 
 # DP1 internals
 resource "google_storage_bucket" "dp-a-dataflow-temp" {
-  name          = "dp-a-df-temp"
+  name          = "dp-a-df-temp-${random_string.random_dp_id.id}"
   location      = "US"
   force_destroy = true
 }
