@@ -31,6 +31,7 @@ resource "google_bigquery_dataset" "dataset-dp-a" {
     user_by_email = google_service_account.service_account-dp-a.email
   }
 
+  # TODO Refactor this such that dataset-dp-a has a role binding to access group dp-a-consumers, such that data product b
   access {
     role = "READER"
     user_by_email = google_service_account.service_account-dp-b.email
@@ -176,4 +177,9 @@ resource "google_compute_firewall" "default" {
 # Allow ingress of dataflow
 resource "google_compute_network" "default" {
   name = "default"
+}
+
+output "dp-a-uid" {
+  # This syntax is for Terraform 0.12 or later.
+  value = random_string.random_dp_id.id
 }
