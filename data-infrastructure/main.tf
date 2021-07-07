@@ -1,3 +1,4 @@
+## base infra
 resource "google_project_service" "service" {
   service = "iam.googleapis.com" 
 
@@ -5,18 +6,21 @@ resource "google_project_service" "service" {
   disable_on_destroy = false
 }
 
+## stream: Up
 # DP1 Service Account
 resource "google_service_account" "service_account-dp-a" {
   account_id   = "dp-a-sa"
   display_name = "Service Account for data product A"
 }
 
+## stream: Up
 # DP2 Service account
 resource "google_service_account" "service_account-dp-b" {
   account_id   = "dp-b-sa"
   display_name = "Service Account for data product B"
 }
 
+## stream: Up
 # DP1 Output port
 resource "google_bigquery_dataset" "dataset-dp-a" {
   dataset_id                  = "dp1ds"
@@ -38,12 +42,14 @@ resource "google_bigquery_dataset" "dataset-dp-a" {
   }
 }
 
+## stream: up
 resource "random_string" "random_dp_id" {
   length           = 16
   special          = false
   upper = false
 }
 
+## stream: up
 resource "google_storage_bucket" "dp-a-output-sb" {
   name          = "dp-a-output-${random_string.random_dp_id.id}"
   location      = "US"
@@ -51,13 +57,14 @@ resource "google_storage_bucket" "dp-a-output-sb" {
 }
 
 
+## stream: up
 # DP1 Input port
 resource "google_storage_bucket" "dp-a-sb" {
   name          = "dp-a-input-${random_string.random_dp_id.id}"
   location      = "US"
   force_destroy = true
 }
-
+## stream: up
 # DP1 SP permissions
 data "google_iam_policy" "dp-a-admin" {
   binding {
@@ -76,16 +83,19 @@ data "google_iam_policy" "dp-a-admin" {
   }
 }
 
+## stream: up
 resource "google_storage_bucket_iam_policy" "dp-a-sb-policy" {
   bucket = google_storage_bucket.dp-a-sb.name
   policy_data = data.google_iam_policy.dp-a-admin.policy_data
 }
 
+## stream: up
 resource "google_storage_bucket_iam_policy" "dp-a-output-sb-policy" {
   bucket = google_storage_bucket.dp-a-output-sb.name
   policy_data = data.google_iam_policy.dp-a-admin.policy_data
 }
 
+## stream: up
 data "google_iam_policy" "dp-a-temp-sb-policy" {
   binding {
     role = "roles/storage.objectAdmin"
@@ -112,34 +122,40 @@ data "google_iam_policy" "dp-a-temp-sb-policy" {
   }
 }
 
+## stream: up
 resource "google_storage_bucket_iam_policy" "dp-a-dataflow-temp-sb-policy" {
   bucket = google_storage_bucket.dp-a-dataflow-temp.name
   policy_data = data.google_iam_policy.dp-a-temp-sb-policy.policy_data
 }
 
+## stream: up
 resource "google_project_iam_member" "dp-a-sa-bq-job-user" {
   project = var.project_name
   role    = "roles/bigquery.jobUser"
   member  = "serviceAccount:${google_service_account.service_account-dp-a.email}"
 }
 
+## stream: up
 resource "google_project_iam_member" "dp-a-sa-dataflow-developer" {
   project = var.project_name
   role    = "roles/dataflow.developer"
   member  = "serviceAccount:${google_service_account.service_account-dp-a.email}"
 }
 
+## stream: up
 resource "google_project_iam_member" "dp-a-sa-compute-viewer" {
   project = var.project_name
   role    = "roles/compute.viewer"
   member  = "serviceAccount:${google_service_account.service_account-dp-a.email}"
 }
 
+## stream: down
 resource "google_project_iam_member" "dp-b-sa-bq-job-user" {
   role    = "roles/bigquery.jobUser"
   member  = "serviceAccount:${google_service_account.service_account-dp-b.email}"
 }
 
+## stream: up
 # DP1 internals
 resource "google_storage_bucket" "dp-a-dataflow-temp" {
   name          = "dp-a-df-temp-${random_string.random_dp_id.id}"
@@ -147,6 +163,7 @@ resource "google_storage_bucket" "dp-a-dataflow-temp" {
   force_destroy = true
 }
 
+## stream: down
 # DP2 output port
 resource "google_bigquery_dataset" "dataset-dp-b" {
   dataset_id                  = "dp2ds"
@@ -161,6 +178,7 @@ resource "google_bigquery_dataset" "dataset-dp-b" {
   }
 }
 
+## base infra
 # Default VPC network for dataflow firewall rull
 resource "google_compute_firewall" "default" {
   name    = "dataflow-traffic"
@@ -174,11 +192,13 @@ resource "google_compute_firewall" "default" {
   target_tags = ["dataflow"]
 }
 
+## base infra
 # Allow ingress of dataflow
 resource "google_compute_network" "default" {
   name = "default"
 }
 
+## stream: up 
 output "dp-a-uid" {
   # This syntax is for Terraform 0.12 or later.
   value = random_string.random_dp_id.id
