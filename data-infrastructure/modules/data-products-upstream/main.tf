@@ -19,8 +19,8 @@ resource "random_string" "random_dp_id" {
   upper = false
 }
 
-resource "google_storage_bucket" "dp-a-output-sb" {
-  name          = "dp-a-output-${random_string.random_dp_id.id}"
+resource "google_storage_bucket" "storagebucket1_output" {
+  name          = "${var.data_product_name}-output-${random_string.random_dp_id.id}"
   location      = "US"
   force_destroy = true
 }
@@ -28,7 +28,7 @@ resource "google_storage_bucket" "dp-a-output-sb" {
 
 # DP1 Input port
 resource "google_storage_bucket" "dp-a-sb" {
-  name          = "dp-a-input-${random_string.random_dp_id.id}"
+  name          = "${var.data_product_name}-input-${random_string.random_dp_id.id}"
   location      = "US"
   force_destroy = true
 }
@@ -51,6 +51,7 @@ data "google_iam_policy" "dp-a-admin" {
   }
 }
 
+//TODO: Refactor storage bucket with policies as a port for a data product
 resource "google_storage_bucket_iam_policy" "dp-a-sb-policy" {
   bucket = google_storage_bucket.dp-a-sb.name
   policy_data = data.google_iam_policy.dp-a-admin.policy_data
