@@ -31,21 +31,29 @@ resource "google_bigquery_dataset" "dataset-dp-a" {
     user_by_email = google_service_account.service_account-dp-a.email
   }
 
+  # TODO Refactor this such that dataset-dp-a has a role binding to access group dp-a-consumers, such that data product b
   access {
     role = "READER"
     user_by_email = google_service_account.service_account-dp-b.email
   }
 }
 
+resource "random_string" "random_dp_id" {
+  length           = 16
+  special          = false
+  upper = false
+}
+
 resource "google_storage_bucket" "dp-a-output-sb" {
-  name          = "dp-a-output"
+  name          = "dp-a-output-${random_string.random_dp_id.id}"
   location      = "US"
   force_destroy = true
 }
 
+
 # DP1 Input port
 resource "google_storage_bucket" "dp-a-sb" {
-  name          = "dp-a-input"
+  name          = "dp-a-input-${random_string.random_dp_id.id}"
   location      = "US"
   force_destroy = true
 }
@@ -134,7 +142,7 @@ resource "google_project_iam_member" "dp-b-sa-bq-job-user" {
 
 # DP1 internals
 resource "google_storage_bucket" "dp-a-dataflow-temp" {
-  name          = "dp-a-df-temp"
+  name          = "dp-a-df-temp-${random_string.random_dp_id.id}"
   location      = "US"
   force_destroy = true
 }
@@ -169,4 +177,9 @@ resource "google_compute_firewall" "default" {
 # Allow ingress of dataflow
 resource "google_compute_network" "default" {
   name = "default"
+}
+
+output "dp-a-uid" {
+  # This syntax is for Terraform 0.12 or later.
+  value = random_string.random_dp_id.id
 }
