@@ -1,29 +1,16 @@
 # DP1 Service Account
-resource "google_service_account" "service_account-dp-a" {
-  account_id   = "dp-a-sa"
-  display_name = "Service Account for data product A"
+resource "google_service_account" "data_product_service_account" {
+  account_id   = var.data_product_account_name
+  display_name = "Service Account for ${var.data_product_account_name}"
 }
 
-
 # DP1 Output port
-resource "google_bigquery_dataset" "dataset-dp-a" {
-  dataset_id                  = "dp1ds"
-  friendly_name               = "dp1-dataset"
-  location                    = "US"
-  default_table_expiration_ms = 3600000
-  default_partition_expiration_ms = 5184000000
-  delete_contents_on_destroy = true
-
-  access {
-    role          = "OWNER"
-    user_by_email = google_service_account.service_account-dp-a.email
-  }
-
-  # TODO Refactor this such that dataset-dp-a has a role binding to access group dp-a-consumers, such that data product b
-  access {
-    role = "READER"
-    user_by_email = google_service_account.service_account-dp-b.email
-  }
+module "dataset1_output" {
+  source = "output-bigquery-dataset"
+  dataset_name = "output_1"
+  data_product_name = var.data_product_name
+  owner_email = google_service_account.data_product_service_account.email
+  consumer_email = var.consumer_email
 }
 
 resource "random_string" "random_dp_id" {

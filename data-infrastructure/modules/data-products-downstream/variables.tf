@@ -1,4 +1,17 @@
-variable service_account_name {
+variable consumer_email {
   type = string
-  description = "service account name for the downstream consumer"
+  description = "Email of google service account that is a consumer of the upstream data"
+}
+
+variable data_product_account_name {
+  type = string
+  description = "data product service account name"
+}
+
+variable output_port_data_set_name {
+  type = list(string)
+}
+
+variable data_product_name {
+  type = string
 }
