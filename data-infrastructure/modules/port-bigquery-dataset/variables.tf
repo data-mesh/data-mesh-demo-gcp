@@ -17,4 +17,5 @@ variable owner_email{
 
 variable consumer_email{
     type = string
+    default = ""
 }
