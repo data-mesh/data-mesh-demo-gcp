@@ -9,9 +9,9 @@ resource "google_project_iam_member" "data_product_service_account_big_query_job
   member  = "serviceAccount:${google_service_account.data_product_service_account.email}"
 }
 
-module "dataset1_output" {
-  source = "output-bigquery-dataset"
-  dataset_name = "output_1"
+module "dataset2" {
+  source = "port-bigquery-dataset"
+  dataset_name = "output2"
   data_product_name = var.data_product_name
   owner_email = google_service_account.data_product_service_account.email
   consumer_email = var.consumer_email
