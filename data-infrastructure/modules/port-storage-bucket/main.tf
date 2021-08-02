@@ -5,7 +5,7 @@ resource "random_string" "random_dp_id" {
 }
 
 resource "google_storage_bucket" "storage_bucket" {
-  name          = "${var.data_product_name}.${var.port_name}.${random_string.random_dp_id.id}"
+  name          = "${var.data_product_name}-${var.port_name}-${random_string.random_dp_id.id}"
   location      = var.location
   force_destroy = true
 }
@@ -36,7 +36,7 @@ data "google_iam_policy" "storage_bucket_owner" {
                key => val if val.email != ""}
       content {
         role = "roles/storage.objectViewer"
-        members = [binding.value["email"]]
+        members = ["group:${binding.value["email"]}"]
       }
   }
 }

@@ -16,7 +16,7 @@ resource "google_bigquery_dataset" "dataset" {
                key => val if val.email != ""}
       content {
         role = "READER"
-        user_by_email = access.value["email"]
+        group_by_email = access.value["email"]
       }
   }
 }

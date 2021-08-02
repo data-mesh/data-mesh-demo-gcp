@@ -43,7 +43,7 @@ module "sql_inputs" {
   source   = "../port-bigquery-dataset"
   for_each =  {for key, val in var.inputs: 
                key => val if val.input_type == "SQL"}
-  dataset_name     = each.value.name
+  dataset_name     = "input_${each.value.name}"
   data_product_name = var.data_product_name
   owner_email = google_service_account.data_product_service_account.email
 }
@@ -55,7 +55,7 @@ module "storage_inputs" {
   for_each =  {for key, val in var.inputs: 
                key => val if val.input_type == "Storage"}
   
-  port_name = "output.${each.value.name}"
+  port_name = "input-${each.value.name}"
   data_product_name = var.data_product_name
   owner_email = google_service_account.data_product_service_account.email
   project_name = var.project_name
@@ -68,7 +68,7 @@ module "sql_outputs" {
   source   = "../port-bigquery-dataset"
   for_each =  {for key, val in var.outputs: 
                key => val if val.output_type == "SQL"}
-  dataset_name     = each.value.name
+  dataset_name     = "output_${each.value.name}"
   data_product_name = var.data_product_name
   owner_email = google_service_account.data_product_service_account.email
   consumers = [{
@@ -82,7 +82,7 @@ module "storage_outputs" {
   for_each =  {for key, val in var.outputs: 
                key => val if val.output_type == "Storage"}
   
-  port_name = "output.${each.value.name}"
+  port_name = "output-${each.value.name}"
   data_product_name = var.data_product_name
   owner_email = google_service_account.data_product_service_account.email
   consumers = [{

@@ -4,13 +4,13 @@ terraform {
   }
 
   backend "gcs" {
-    credentials = "./account.json"
+    credentials = "./../account.json"
     bucket  = "data-mesh-demo-tf"
     prefix  = "terraform/state/base-infra"
   }
 }
 
 provider "google" {
-  credentials = file("account.json")
+  credentials = file("../account.json")
   project     = var.project_name 
 }

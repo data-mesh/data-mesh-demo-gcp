@@ -5,7 +5,7 @@ resource "random_string" "random_dp_id" {
 }
 
 resource "google_storage_bucket" "dataflow_temp" {
-  name          = "${var.data_product_name}.dataflow.temp.${random_string.random_dp_id.id}"
+  name          = "${var.data_product_name}-dataflow-temp-${random_string.random_dp_id.id}"
   location      = var.location
   force_destroy = true
 }
@@ -39,4 +39,8 @@ data "google_iam_policy" "dataflow_temp" {
       "serviceAccount:${var.data_product_owner_email}",
     ]
   }
+}
+
+output "random_id" {
+  value = random_string.random_dp_id.id
 }

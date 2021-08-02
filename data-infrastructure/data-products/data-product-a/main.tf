@@ -3,19 +3,19 @@ module "data_product" {
   data_product_name ="dataproducta"
   inputs=[
     {
-      "name"="storage_a_input_1"
+      "name"="storage-a-1"
       "input_type"="Storage"
     }
   
   ]
   outputs=[
     {
-      "name"="dataset1output"
+      "name"="dataset1"
       "output_type"="SQL"
       consumer_email="data-product-a-consumers@thoughtworks.com"
     },
     {
-      "name"="storage_a_output_1"
+      "name"="storage-a-1"
       "output_type"="Storage"
       consumer_email="data-product-a-consumers@thoughtworks.com"
     },
