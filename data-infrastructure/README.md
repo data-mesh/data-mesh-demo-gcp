@@ -10,14 +10,37 @@ Setup infrastructure provisioning service account with name `data-mesh-base-infr
 
 Download the service account key and use it as the `account.json` to provision the infra
 
-Create a <file name of your choice>.tfvars with your project name and project id
+Create a <file name of your choice>.tfvars with your project name and project id in /base-infra/env
 
-## Infra Provisioning
+## Base Infra Provisioning
 
 ```
-terraform init
-terraform plan -var-file=<path of your tf vars>
-terraform apply -var-file=<path of your tf vars>
+export WORKING_DIR=/base-infra
+./init.sh
+./plan.sh -var-file=<path of your tf vars>
+./apply.sh -var-file=<path of your tf vars>
 ```
 
-If you are using the data-mesh-demo gcp project then the path is env/dev.tfvars
+If you are using the data-mesh-demo gcp project then the path of your tf vars is env/dev.tfvars
+
+## Data Product A Infra Provisioning
+
+```
+export WORKING_DIR=/data-products/data-product-a
+./init.sh
+./plan.sh -var-file=env/dev.tfvars
+./apply.sh -var-file=env/dev.tfvars
+```
+
+If you are using the data-mesh-demo gcp project then the path of your tf vars is env/dev.tfvars
+
+## Data Product B Infra Provisioning
+
+```
+export WORKING_DIR=/data-products/data-product-b
+./init.sh
+./plan.sh -var-file=env/dev.tfvars
+./apply.sh -var-file=env/dev.tfvars
+```
+
+If you are using the data-mesh-demo gcp project then the path of your tf vars is env/dev.tfvars

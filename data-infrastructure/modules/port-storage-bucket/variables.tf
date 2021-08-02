@@ -13,8 +13,15 @@ variable location{
     default= "US"
 }
 
-variable data_product_owner_email{
+variable owner_email{
     type = string
+}
+
+variable consumers{
+    type = list(object({
+        email = string
+    }))
+    default = []
 }
 
 variable project_name{

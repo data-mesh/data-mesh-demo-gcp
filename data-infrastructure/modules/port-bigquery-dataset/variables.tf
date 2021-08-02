@@ -15,7 +15,9 @@ variable owner_email{
     type = string
 }
 
-variable consumer_email{
-    type = string
-    default = ""
+variable consumers{
+    type = list(object({
+        email = string
+    }))
+    default = []
 }

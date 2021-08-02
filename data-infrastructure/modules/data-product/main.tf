@@ -1,66 +1,8 @@
-# DP1 Service Account
+# Data Product Service Account
 resource "google_service_account" "data_product_service_account" {
-  account_id   = var.data_product_account_name
-  display_name = "Service Account for ${var.data_product_account_name}"
+  account_id   = var.data_product_name
+  display_name = "Service Account for ${var.data_product_name}"
 }
-
-# DP1 Output port
-
-# SQL Inputs
-
-module "sql_inputs" {
-  source   = "../port-bigquery-dataset"
-  for_each =  {for key, val in var.inputs: 
-               key => val if val.type == "SQL"}
-  dataset_name     = each.name
-  data_product_name = var.data_product_name
-  owner_email = google_service_account.data_product_service_account.email
-}
-
-
-# Storage Inputs
-module "storage_inputs" {
-  source = "../port-storage-bucket"
-  for_each =  {for key, val in var.inputs: 
-               key => val if val.type == "Storage"}
-  
-  port_name = "output.${each.name}"
-  data_product_name = var.data_product_name
-  data_product_owner_email = google_service_account.data_product_service_account.email
-  project_name = var.project_name
-}
-
-
-# SQL Outputs
-
-module "sql_outputs" {
-  source   = "../port-bigquery-dataset"
-  for_each =  {for key, val in var.outputs: 
-               key => val if val.type == "SQL"}
-  dataset_name     = each.name
-  data_product_name = var.data_product_name
-  owner_email = google_service_account.data_product_service_account.email
-}
-
-
-# Storage Outputs
-module "storage_outputs" {
-  source = "../port-storage-bucket"
-  for_each =  {for key, val in var.outputs: 
-               key => val if val.type == "Storage"}
-  
-  port_name = "output.${each.name}"
-  data_product_name = var.data_product_name
-  data_product_owner_email = google_service_account.data_product_service_account.email
-  project_name = var.project_name
-}
-
-
-# resource "google_project_iam_member" "dp-a-sa-bq-job-user" {
-#   project = var.project_name
-#   role    = "roles/bigquery.jobUser"
-#   member  = "serviceAccount:${google_service_account.data_product_service_account.email}"
-# }
 
 # For compute in dataflow
 
@@ -85,6 +27,68 @@ resource "google_project_iam_member" "compute" {
   project = var.project_name
   role    = "roles/compute.viewer"
   member  = "serviceAccount:${google_service_account.data_product_service_account.email}"
+}
+
+# For creating jobs that can query big query tables
+resource "google_project_iam_member" "bigquery_user" {
+  count= var.compute ? 1 : 0
+  project = var.project_name
+  role    = "roles/bigquery.jobUser"
+  member  = "serviceAccount:${google_service_account.data_product_service_account.email}"
+}
+
+# SQL Inputs
+
+module "sql_inputs" {
+  source   = "../port-bigquery-dataset"
+  for_each =  {for key, val in var.inputs: 
+               key => val if val.input_type == "SQL"}
+  dataset_name     = each.value.name
+  data_product_name = var.data_product_name
+  owner_email = google_service_account.data_product_service_account.email
+}
+
+
+# Storage Inputs
+module "storage_inputs" {
+  source = "../port-storage-bucket"
+  for_each =  {for key, val in var.inputs: 
+               key => val if val.input_type == "Storage"}
+  
+  port_name = "output.${each.value.name}"
+  data_product_name = var.data_product_name
+  owner_email = google_service_account.data_product_service_account.email
+  project_name = var.project_name
+}
+
+
+# SQL Outputs
+
+module "sql_outputs" {
+  source   = "../port-bigquery-dataset"
+  for_each =  {for key, val in var.outputs: 
+               key => val if val.output_type == "SQL"}
+  dataset_name     = each.value.name
+  data_product_name = var.data_product_name
+  owner_email = google_service_account.data_product_service_account.email
+  consumers = [{
+    "email"=each.value.consumer_email
+  }]
+}
+
+# Storage Outputs
+module "storage_outputs" {
+  source = "../port-storage-bucket"
+  for_each =  {for key, val in var.outputs: 
+               key => val if val.output_type == "Storage"}
+  
+  port_name = "output.${each.value.name}"
+  data_product_name = var.data_product_name
+  owner_email = google_service_account.data_product_service_account.email
+  consumers = [{
+    "email"=each.value.consumer_email
+  }]
+  project_name = var.project_name
 }
 
 

@@ -1,3 +1,4 @@
-docker run -i -t -v $PWD:$PWD -w $PWD \
+docker run -i -t -v $PWD:$PWD -w $PWD/$WORKING_DIR \
 hashicorp/terraform:0.13.7 \
-plan -var-file=env/dev.tfvars
+plan $1
+

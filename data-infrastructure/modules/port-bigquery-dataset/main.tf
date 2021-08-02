@@ -11,12 +11,12 @@ resource "google_bigquery_dataset" "dataset" {
     user_by_email = var.owner_email
   }
 
-  # TODO Refactor this such that dataset-dp-a has a role binding to access group dp-a-consumers, such that data product b
-  dynamic "readers" {
-    for_each = var.consumer_email == "" ? [] : [var.consumer_email]
-      access {
+  dynamic "access" {
+    for_each = {for key, val in var.consumers: 
+               key => val if val.email != ""}
+      content {
         role = "READER"
-        user_by_email = each.value
+        user_by_email = access.value["email"]
       }
   }
 }

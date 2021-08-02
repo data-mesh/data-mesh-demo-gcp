@@ -19,7 +19,7 @@ data "google_iam_policy" "storage_bucket_owner" {
   binding {
     role = "roles/storage.objectCreator"
     members = [
-      "serviceAccount:${var.data_product_owner_email}",
+      "serviceAccount:${var.owner_email}",
     ]
   }
 
@@ -27,7 +27,17 @@ data "google_iam_policy" "storage_bucket_owner" {
     role = "roles/storage.admin"
     members = [
       "serviceAccount:data-mesh-base-infra-provision@${var.project_name}.iam.gserviceaccount.com",
-      "serviceAccount:${var.data_product_owner_email}",
+      "serviceAccount:${var.owner_email}",
     ]
   }
+
+  dynamic "binding" {
+    for_each = {for key, val in var.consumers: 
+               key => val if val.email != ""}
+      content {
+        role = "roles/storage.objectViewer"
+        members = [binding.value["email"]]
+      }
+  }
 }
+
