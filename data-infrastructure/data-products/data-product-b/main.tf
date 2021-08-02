@@ -5,12 +5,12 @@ module "data_product" {
   ]
   outputs=[
     {
-      "name"="dataset1output"
+      "name"="dataset1"
       "output_type"="SQL"
       consumer_email="data-product-b-consumers@thoughtworks.com"
     },
     {
-      "name"="storage_b_output_1"
+      "name"="storage_b_1"
       "output_type"="Storage"
       consumer_email="data-product-b-consumers@thoughtworks.com"
     },
