@@ -7,6 +7,12 @@ variable "location" {
     default = "US"
 }
 
+# inputs are for data products that might need to ingest external sources of data into their system or for error datasets
+# It could be fetching daily snapshots from some ftp server 
+# It could be fetching daily snapshots from some api 
+# In some enterprises it could be that you need to give an external data producer a data storage account, 
+  # you can simply do that by provisioning an external data product with a storage bucket and an identity for it
+  # and manage access to it via the consumer group on the storage account where you can grant your system read permissions. 
 variable "inputs" {
   type = list(object({
     name = string
