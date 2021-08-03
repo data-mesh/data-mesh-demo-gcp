@@ -41,3 +41,14 @@ data "google_iam_policy" "storage_bucket_owner" {
   }
 }
 
+output id {
+  value = google_storage_bucket.storage_bucket.id
+}
+
+output url {
+  value = google_storage_bucket.storage_bucket.url
+}
+
+output self_link {
+  value = google_storage_bucket.storage_bucket.self_link
+}

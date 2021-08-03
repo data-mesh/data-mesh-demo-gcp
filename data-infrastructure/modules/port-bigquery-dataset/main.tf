@@ -20,3 +20,11 @@ resource "google_bigquery_dataset" "dataset" {
       }
   }
 }
+
+output id {
+  value = google_bigquery_dataset.dataset.id
+}
+
+output self_link {
+  value = google_bigquery_dataset.dataset.self_link
+}

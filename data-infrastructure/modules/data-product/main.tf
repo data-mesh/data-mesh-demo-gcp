@@ -93,3 +93,21 @@ module "storage_outputs" {
 
 
 # TODO Output each storage and dataset paths
+
+output "data_flow_bucket" {
+  value = module.data_product_dataflow_temp_storage.*.url
+}
+
+output "inputs_addresses" {
+  value = setunion(
+    toset([ for input in module.storage_inputs : ({"id": input.id, "path": input.url, "self_link": input.self_link}) ]),
+    toset([ for input in module.sql_inputs : ({"id": input.id, "path": input.id, "self_link": input.self_link}) ])
+  )
+}
+
+output "outputs_addresses" {
+  value = setunion(
+    toset([ for output in module.storage_outputs : ({"id": output.id, "path": output.url, "self_link": output.self_link}) ]),
+    toset([ for output in module.sql_outputs : ({"id": output.id, "path": output.id, "self_link": output.self_link}) ])
+  )
+}

@@ -24,3 +24,15 @@ module "data_product" {
   project_name= var.project_name
   project_id = var.project_id
 }
+
+output "data_flow_bucket" {
+  value=module.data_product.data_flow_bucket
+}
+
+output "outputs" {
+  value = module.data_product.outputs_addresses
+}
+
+output "inputs" {
+  value = module.data_product.inputs_addresses
+}

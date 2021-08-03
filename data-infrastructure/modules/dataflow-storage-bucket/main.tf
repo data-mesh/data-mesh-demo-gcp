@@ -44,3 +44,11 @@ data "google_iam_policy" "dataflow_temp" {
 output "random_id" {
   value = random_string.random_dp_id.id
 }
+
+output url {
+  value = google_storage_bucket.dataflow_temp.url
+}
+
+output self_link {
+  value = google_storage_bucket.dataflow_temp.self_link
+}
