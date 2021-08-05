@@ -6,41 +6,20 @@ resource "google_service_account" "data_product_service_account" {
 
 # For compute in dataflow
 
-module "data_product_dataflow_temp_storage" {
+module "compute" {
   count= var.compute ? 1 : 0
-  source = "../dataflow-storage-bucket"
+  source = "../compute"
   data_product_name = var.data_product_name
   data_product_owner_email = google_service_account.data_product_service_account.email
   project_name = var.project_name
   project_id = var.project_id
 }
 
-resource "google_project_iam_member" "dataflow_developer" {
-  count= var.compute ? 1 : 0
-  project = var.project_name
-  role    = "roles/dataflow.developer"
-  member  = "serviceAccount:${google_service_account.data_product_service_account.email}"
-}
-
-resource "google_project_iam_member" "compute" {
-  count= var.compute ? 1 : 0
-  project = var.project_name
-  role    = "roles/compute.viewer"
-  member  = "serviceAccount:${google_service_account.data_product_service_account.email}"
-}
-
-# For creating jobs that can query big query tables
-resource "google_project_iam_member" "bigquery_user" {
-  count= var.compute ? 1 : 0
-  project = var.project_name
-  role    = "roles/bigquery.jobUser"
-  member  = "serviceAccount:${google_service_account.data_product_service_account.email}"
-}
 
 # SQL Inputs
 
 module "sql_inputs" {
-  source   = "../port-bigquery-dataset"
+  source   = "../bigquery-dataset"
   for_each =  {for key, val in var.inputs: 
                key => val if val.input_type == "SQL"}
   dataset_name     = "input_${each.value.name}"
@@ -51,7 +30,7 @@ module "sql_inputs" {
 
 # Storage Inputs
 module "storage_inputs" {
-  source = "../port-storage-bucket"
+  source = "../storage-bucket"
   for_each =  {for key, val in var.inputs: 
                key => val if val.input_type == "Storage"}
   
@@ -65,7 +44,7 @@ module "storage_inputs" {
 # SQL Outputs
 
 module "sql_outputs" {
-  source   = "../port-bigquery-dataset"
+  source   = "../bigquery-dataset"
   for_each =  {for key, val in var.outputs: 
                key => val if val.output_type == "SQL"}
   dataset_name     = "output_${each.value.name}"
@@ -78,7 +57,7 @@ module "sql_outputs" {
 
 # Storage Outputs
 module "storage_outputs" {
-  source = "../port-storage-bucket"
+  source = "../storage-bucket"
   for_each =  {for key, val in var.outputs: 
                key => val if val.output_type == "Storage"}
   
@@ -95,7 +74,7 @@ module "storage_outputs" {
 # TODO Output each storage and dataset paths
 
 output "data_flow_bucket" {
-  value = module.data_product_dataflow_temp_storage.*.url
+  value = module.compute.*.url
 }
 
 output "inputs_addresses" {

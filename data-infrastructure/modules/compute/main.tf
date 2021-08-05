@@ -41,6 +41,26 @@ data "google_iam_policy" "dataflow_temp" {
   }
 }
 
+
+resource "google_project_iam_member" "dataflow_developer" {
+  project = var.project_name
+  role    = "roles/dataflow.developer"
+  member  = "serviceAccount:${var.data_product_owner_email}"
+}
+
+resource "google_project_iam_member" "compute" {
+  project = var.project_name
+  role    = "roles/compute.viewer"
+  member  = "serviceAccount:${var.data_product_owner_email}"
+}
+
+# For creating jobs that can query big query tables
+resource "google_project_iam_member" "bigquery_user" {
+  project = var.project_name
+  role    = "roles/bigquery.jobUser"
+  member  = "serviceAccount:${var.data_product_owner_email}"
+}
+
 output "random_id" {
   value = random_string.random_dp_id.id
 }
