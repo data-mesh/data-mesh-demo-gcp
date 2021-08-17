@@ -27,6 +27,8 @@ jobs:
       - run:
           name: terraform
           command: |
+            cd data-infrastructure/data-products/data-product-a
+            ls -a
             terraform apply -auto-approve tfapply
       - persist_to_workspace:
           root: .
