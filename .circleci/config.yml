@@ -9,8 +9,8 @@ jobs:
       - run:
           name: terraform init & plan
           command: |
-            echo ${GCP_CREDENTIALS} | base64 -d > account.json
             cd data-infrastructure/data-products/data-product-a
+            echo ${GCP_CREDENTIALS} | base64 -d > account.json
             ls -a
             terraform init -input=false
             terraform plan -out tfapply -var-file env/dev.tfvars
