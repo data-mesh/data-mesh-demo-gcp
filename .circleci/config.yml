@@ -17,3 +17,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+workflows:
+  single-job-lifecycle:
+    jobs:
+      - plan-apply
