@@ -15,9 +15,9 @@ jobs:
             terraform init -input=false
             terraform plan -out tfapply -var-file env/dev.tfvars
       - persist_to_workspace:
-        root: .
-        paths:
-          - .
+          root: .
+          paths:
+            - .
   apply:
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
