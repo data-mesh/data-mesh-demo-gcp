@@ -1,0 +1,19 @@
+version: 2.1
+orbs:
+  terraform: circleci/terraform@2.1.0
+jobs:
+  plan-apply:
+    working_directory: /data-infrastructure/data-products/data-product-a
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
+    steps:
+      - checkout
+      - run:
+          name: terraform init & plan
+          command: |
+            echo ${GCP_CREDENTIALS} | base64 --decode --ignore-garbage > account.json
+            terraform init -input=false
+            terraform plan -out tfapply -var-file env/dev.tfvars
+      - persist_to_workspace:
+          root: .
+          paths:
