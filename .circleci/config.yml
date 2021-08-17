@@ -14,7 +14,7 @@ jobs:
             ls -a
             terraform init -input=false
             terraform plan -out tfapply -var-file env/dev.tfvars
-                  - persist_to_workspace:
+      - persist_to_workspace:
         root: .
         paths:
           - .
