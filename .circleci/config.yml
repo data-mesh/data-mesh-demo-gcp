@@ -10,8 +10,8 @@ jobs:
           name: terraform init & plan
           command: |
             echo ${GCP_CREDENTIALS} | base64 -d > account.json
-            # terraform init -input=false
-            # terraform plan -out tfapply -var-file env/dev.tfvars
+            terraform init -input=false
+            terraform plan -out tfapply -var-file env/dev.tfvars
 workflows:
   version: 2
   plan_approve_apply:
