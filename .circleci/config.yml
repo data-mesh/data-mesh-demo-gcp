@@ -9,7 +9,7 @@ jobs:
       - run:
           name: terraform init & plan
           command: |
-            echo ${GCP_CREDENTIALS} | base64 --decode --ignore-garbage > account.json
+            echo ${GCP_CREDENTIALS} | base64 -d --ignore-garbage > account.json
             # terraform init -input=false
             # terraform plan -out tfapply -var-file env/dev.tfvars
 workflows:
