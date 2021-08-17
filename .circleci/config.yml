@@ -10,11 +10,8 @@ jobs:
           name: terraform init & plan
           command: |
             echo ${GCP_CREDENTIALS} | base64 --decode --ignore-garbage > account.json
-            terraform init -input=false
-            terraform plan -out tfapply -var-file env/dev.tfvars
-      - persist_to_workspace:
-          root: .
-          paths:
+            # terraform init -input=false
+            # terraform plan -out tfapply -var-file env/dev.tfvars
 workflows:
   single-job-lifecycle:
     jobs:
