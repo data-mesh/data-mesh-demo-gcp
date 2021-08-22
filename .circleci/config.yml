@@ -1,48 +1,29 @@
-version: 2
-jobs:
-  plan-apply:
-    working_directory: /data-infrastructure/data-products/data-product-a
-    docker:
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
-    steps:
-      - checkout
-      - run:
-          name: terraform init & plan
-          command: |
-            cd data-infrastructure/data-products/data-product-a
-            echo ${GCP_CREDENTIALS} | base64 -d > account.json
-            ls -a
-            terraform init -input=false
-            terraform plan -out tfapply -var-file env/dev.tfvars
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-  apply:
-    docker:
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: terraform
-          command: |
-            cd data-infrastructure/data-products/data-product-a
-            ls -a
-            terraform apply -auto-approve tfapply
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
+version: 2.1
+
+# this allows you to use CircleCI's dynamic configuration feature
+setup: true
+
+# the path-filtering orb is required to continue a pipeline based on
+# the path of an updated fileset
+orbs:
+  path-filtering: circleci/path-filtering@0.0.2
+
 workflows:
-  version: 2
-  plan_approve_apply:
+  # the always-run workflow is always triggered, regardless of the pipeline parameters.
+  always-run:
     jobs:
-      - plan-apply
-      - hold-apply:
-          type: approval
-          requires:
-            - plan-apply
-      - apply:
-          requires:
-            - hold-apply
+      # the path-filtering/filter job determines which pipeline
+      # parameters to update.
+      - path-filtering/filter:
+          name: check-updated-files
+          # 3-column, whitespace-delimited mapping. One mapping per
+          # line:
+          # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
+          mapping: |
+            data-infrastrucutre/data-products/.* provision true
+          base-revision: master
+          # this is the path of the configuration we should trigger once
+          # path filtering and pipeline parameter value updates are
+          # complete. In this case, we are using the parent dynamic
+          # configuration itself.
+          config-path: .circleci/continue_config.yml

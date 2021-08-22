@@ -1,0 +1,58 @@
+version: 2
+
+# the default pipeline parameters, which will be updated according to
+# the results of the path-filtering orb
+parameters:
+  provision:
+    type: boolean
+    default: false
+
+jobs:
+  plan-apply:
+    working_directory: /data-infrastructure/data-products/data-product-a
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
+    steps:
+      - checkout
+      - run:
+          name: terraform init & plan
+          command: |
+            cd data-infrastructure/data-products/data-product-a
+            echo ${GCP_CREDENTIALS} | base64 -d > account.json
+            ls -a
+            terraform init -input=false
+            terraform plan -out tfapply -var-file env/dev.tfvars
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  apply:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: terraform
+          command: |
+            cd data-infrastructure/data-products/data-product-a
+            ls -a
+            terraform apply -auto-approve tfapply
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+workflows:
+  version: 2
+  plan_approve_apply:
+    when: << pipeline.parameters.provision >>
+    jobs:
+      - plan-apply
+      - hold-apply:
+          type: approval
+          requires:
+            - plan-apply
+      - apply:
+          requires:
+            - hold-apply
