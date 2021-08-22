@@ -21,7 +21,7 @@ workflows:
           # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
           mapping: |
             data-infrastrucutre/data-products/.* provision true
-          base-revision: master
+          base-revision: self-serve-pipeline
           # this is the path of the configuration we should trigger once
           # path filtering and pipeline parameter value updates are
           # complete. In this case, we are using the parent dynamic
