@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 # the default pipeline parameters, which will be updated according to
 # the results of the path-filtering orb
@@ -44,7 +44,6 @@ jobs:
             - .
 
 workflows:
-  version: 2
   plan_approve_apply:
     when: << pipeline.parameters.provision >>
     jobs:
