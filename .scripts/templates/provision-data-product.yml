@@ -1,0 +1,52 @@
+version: 2.1
+
+jobs:
+{%- for data_product in data_products %}
+  plan-apply-{{ data_product.name }}:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
+    steps:
+      - checkout
+      - run:
+          name: terraform init & plan
+          command: |
+            cd {{ data_product.dir }}
+            ls -a
+            echo ${GCP_CREDENTIALS} | base64 -d > account.json
+            terraform init -input=false
+            terraform plan -out tfapply -var-file env/dev.tfvars
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  apply-{{ data_product.name }}:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: terraform
+          command: |
+            cd {{ data_product.dir }}
+            ls -a
+            terraform apply -auto-approve tfapply
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+{% endfor %}
+
+workflows:
+  plan_approve_apply:
+    jobs:
+      {%- for data_product in data_products %}
+      - plan-apply-{{ data_product.name }}
+      - hold-apply-{{ data_product.name }}:
+          type: approval
+          requires:
+            - plan-apply-{{ data_product.name }}
+      - apply-{{ data_product.name }}:
+          requires:
+            - hold-apply-{{ data_product.name }}
+      {% endfor %}

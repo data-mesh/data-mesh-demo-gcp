@@ -5,3 +5,6 @@ terraform.tfstate.backup
       
 keys/
 account.json
+
+configs
+generated_config.yml

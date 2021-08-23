@@ -1,48 +1,44 @@
-version: 2
+version: 2.1
+setup: true
+orbs:
+  python: circleci/python@1.4.0
+  continuation: circleci/continuation@0.1.0
+
 jobs:
-  plan-apply:
-    working_directory: /data-infrastructure/data-products/data-product-a
+  generate-config:
+    parameters:
+        run-generated-pipeline:
+          type: boolean
+          default: false
+    executor: continuation/default
+    working_directory: ~/generate-pipeline
     docker:
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
+      - image: circleci/python:3.9
+        environment:
+          PIPENV_VENV_IN_PROJECT: true
     steps:
       - checkout
+      - run: 
+          command: | 
+            ls -la
       - run:
-          name: terraform init & plan
           command: |
-            cd data-infrastructure/data-products/data-product-a
-            echo ${GCP_CREDENTIALS} | base64 -d > account.json
-            ls -a
-            terraform init -input=false
-            terraform plan -out tfapply -var-file env/dev.tfvars
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-  apply:
-    docker:
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
-    steps:
-      - attach_workspace:
-          at: .
+            cd ./.scripts
+            sudo pip install pipenv
+            pipenv install
+            ls -la
       - run:
-          name: terraform
           command: |
-            cd data-infrastructure/data-products/data-product-a
-            ls -a
-            terraform apply -auto-approve tfapply
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
+            mkdir configs
+            cd ./.scripts
+            pipenv run python generate-pipeline-config.py
+            cd ../
+            cat configs/generated_config.yml
+      - continuation/continue:
+          parameters: '{}'
+          configuration_path: configs/generated_config.yml
+
 workflows:
-  version: 2
-  plan_approve_apply:
+  setup-workflow:
     jobs:
-      - plan-apply
-      - hold-apply:
-          type: approval
-          requires:
-            - plan-apply
-      - apply:
-          requires:
-            - hold-apply
+      - generate-config
