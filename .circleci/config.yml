@@ -42,14 +42,11 @@ jobs:
             mkdir configs
             cd ./.scripts
             pipenv run python generate-pipeline-config.py
-            echo 'export RUN_CONTINUATION=false' >> $BASH_ENV
-      # If no generated config don't do anything
-      - when:
-          condition: $RUN_CONTINUATION
-          steps:
-            - continuation/continue:
-                parameters: '{}'
-                configuration_path: configs/generated_config.yml
+            cd ../
+            cat configs/generated_config.yml
+      - continuation/continue:
+          parameters: '{}'
+          configuration_path: configs/generated_config.yml
 
 workflows:
   setup-workflow:
