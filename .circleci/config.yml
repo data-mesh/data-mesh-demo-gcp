@@ -1,6 +1,7 @@
 version: 2.1
 setup: true
 orbs:
+  python: circleci/python@1.4.0
   continuation: circleci/continuation@0.1.0
 
 jobs:
@@ -8,11 +9,12 @@ jobs:
     executor: continuation/default
     steps:
       - checkout
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
       - run: 
           name: Generate Pipeline generated_config.yml file
           command: |
-            sudo pip install pipenv
-            pipenv install
             ./scripts/generate-pipeline-config.py
       # - continuation/continue:
       #     parameters: '{}'
