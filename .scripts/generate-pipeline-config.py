@@ -50,3 +50,10 @@ if len(data_product_configs) > 0:
 
     with open('../configs/generated_config.yml', 'w') as f:
         f.write(output)
+
+else:
+    default_pipeline = ""
+    with open('./templates/default-do-nothing.yml',mode='r') as f:
+        default_pipeline = f.read()
+    with open('../configs/generated_config.yml', 'w') as f:
+        f.write(default_pipeline)

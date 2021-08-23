@@ -1,0 +1,14 @@
+version: 2.1
+
+jobs:
+  do-nothing:
+    steps:
+      - run:
+          name: do nothing
+          command: |
+            echo "Nothing found to provision"
+
+workflows:
+  do_nothing:
+    jobs:
+      - do-nothing
