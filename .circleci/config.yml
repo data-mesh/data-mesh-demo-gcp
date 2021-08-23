@@ -20,7 +20,7 @@ jobs:
       #     configuration_path: configs/generated_config.yml
 
 
-    working_directory: ~/.scripts
+    working_directory: ~/generate-pipeline
     docker: # run the steps with Docker
       # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
       - image: circleci/python:3.9
@@ -33,21 +33,21 @@ jobs:
       - checkout # check out source code to working directory
       - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.9/site-packages
-      # - restore_cache:
-      # # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-      #     key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      - restore_cache:
+      # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run:
           command: |
             sudo pip install pipenv
             pipenv install
-      # - save_cache: # cache Python dependencies using checksum of Pipfile as the cache-key
-      #     key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-      #     paths:
-      #       - "venv"
+      - save_cache: # cache Python dependencies using checksum of Pipfile as the cache-key
+          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          paths:
+            - "venv"
       - run:
           command: |
-            ls -la
-            pipenv run python ./scripts/generate-pipeline-config.py
+            ls -la ./generate-pipeline
+            pipenv run python /scripts/generate-pipeline-config.py
       # - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
       #     path: test-results
       #     destination: tr1
