@@ -1,5 +1,6 @@
 module "data_product" {
   source   = "../../modules/data-product"
+  
   data_product_name ="dataproducta"
   inputs=[
     {
