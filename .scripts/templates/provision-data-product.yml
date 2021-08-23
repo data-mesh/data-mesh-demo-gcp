@@ -3,7 +3,6 @@ version: 2.1
 jobs:
 {%- for data_product in data_products %}
   plan-apply-{{ data_product.name }}:
-    working_directory: {{ data_product.dir }}
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
     steps:
