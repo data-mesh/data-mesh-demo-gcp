@@ -33,9 +33,13 @@ jobs:
       - checkout # check out source code to working directory
       - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.9/site-packages
+      - run: 
+          command: | 
+            ls -la
+            ls -la ./generate-pipeline
       - restore_cache:
       # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: deps9-{{ .Branch }}-{{ checksum "./scripts/Pipfile.lock" }}
       - run:
           command: |
             sudo pip install pipenv
