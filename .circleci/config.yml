@@ -20,7 +20,7 @@ workflows:
           # line:
           # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
           mapping: |
-            data-infrastructure/data-products/($|data-product-.*) provision true
+            ^data-infrastructure/data-products/data-product-* provision true
           base-revision: self-serve-pipeline
           # this is the path of the configuration we should trigger once
           # path filtering and pipeline parameter value updates are
