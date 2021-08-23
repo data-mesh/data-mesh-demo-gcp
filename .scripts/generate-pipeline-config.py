@@ -12,19 +12,19 @@ print('Printing changes {}'.format(changes))
 
 # Get data products to provision
 def get_data_products_configs(gitChanges):
-    configs = list()
+    configs = dict()
     for gitChange in gitChanges: 
         gitChangeArray = gitChange.split('\t')
         print('Print diff split {}'.format(gitChangeArray))
 
         if gitChangeArray[0].startswith('M') | gitChangeArray[0].startswith('A'):
                 print('file path that changed or added {}'.format(gitChangeArray[1]))
-                configToAdd = {
-                            "name": gitChangeArray[1].split('/')[2],
-                            "dir": gitChangeArray[1]
-                        }
-                if configToAdd not in configs :            
-                    configs.append(configToAdd)
+                configValue = {
+                        "name": gitChangeArray[1].split('/')[2],
+                        "dir": gitChangeArray[1]
+                    }
+                configKey = gitChangeArray[1].split('/')[2]
+                configs[configKey] = configValue
     return configs
 
 data_product_configs = get_data_products_configs(changes)
@@ -33,7 +33,7 @@ print('Printing data products configs {}'.format(data_product_configs))
 if len(data_product_configs) > 0:
     # Create the data for rendering the template
     template_data = {
-        "data_products": data_product_configs
+        "data_products": list(data_product_configs.values())
     }
     print("Printing the template data {}".format(template_data))
 
