@@ -23,7 +23,7 @@ jobs:
     working_directory: ~/.scripts
     docker: # run the steps with Docker
       # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
-      - image: circleci/python:3.6.4
+      - image: circleci/python:3.9
         # auth:
         #   username: mydockerhub-user
         #   password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
