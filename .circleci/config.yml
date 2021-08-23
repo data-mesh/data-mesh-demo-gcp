@@ -1,32 +1,24 @@
 version: 2.1
-
-# this allows you to use CircleCI's dynamic configuration feature
 setup: true
-
-# the path-filtering orb is required to continue a pipeline based on
-# the path of an updated fileset
 orbs:
-  path-filtering: circleci/path-filtering@0.0.3
+  continuation: circleci/continuation@0.1.0
+
+jobs:
+  generate-config:
+    executor: continuation/default
+    steps:
+      - checkout
+      - run: 
+          name: Generate Pipeline generated_config.yml file
+          command: |
+            sudo pip install pipenv
+            pipenv install
+            ./scripts/generate-pipeline-config.py
+      # - continuation/continue:
+      #     parameters: '{}'
+      #     configuration_path: configs/generated_config.yml
 
 workflows:
-  # the always-run workflow is always triggered, regardless of the pipeline parameters.
-  always-run:
+  setup-workflow:
     jobs:
-      # the path-filtering/filter job determines which pipeline
-      # parameters to update.
-      - path-filtering/filter:
-          name: check-updated-files
-          # 3-column, whitespace-delimited mapping. One mapping per
-          # line:
-          # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
-          mapping: |
-            data-infrastructure/data-products/data-product-.*/.* provision true
-          base-revision: self-serve-pipeline
-          # this is the path of the configuration we should trigger once
-          # path filtering and pipeline parameter value updates are
-          # complete. In this case, we are using the parent dynamic
-          # configuration itself.
-          config-path: .circleci/continue_config.yml
-          post-steps: # steps to run after steps defined in the job bar
-            - run:
-                command: echo "Test post steps"
+      - generate-config

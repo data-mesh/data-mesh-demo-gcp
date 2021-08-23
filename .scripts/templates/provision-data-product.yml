@@ -48,7 +48,6 @@ jobs:
 
 workflows:
   plan_approve_apply:
-    when: << pipeline.parameters.provision >>
     jobs:
       - plan-apply
       - hold-apply:
