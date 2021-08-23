@@ -48,7 +48,7 @@ jobs:
           command: |
             mkdir configs
             cd ./.scripts
-            pipenv run python generate-pipeline-config.py > ../configs/generated_config.yml
+            pipenv run python generate-pipeline-config.py
             cd ../
             cat configs/generated_config.yml
       # - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/

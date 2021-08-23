@@ -65,4 +65,7 @@ file.close()
 
 # Generate the pipeline config
 j2_template = Template(template)
-print(j2_template.render(data))
+output=j2_template.render(data)
+
+with open('../configs/generated_config.yml', 'w') as f:
+    f.write(output)
