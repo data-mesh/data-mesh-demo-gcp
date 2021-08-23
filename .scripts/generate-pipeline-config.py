@@ -39,11 +39,8 @@ if len(data_product_configs) > 0:
     print("Printing the template data {}".format(template_data))
 
     # Read the template file 
-    # Open a file: file
     file = open('./templates/provision-data-product.yml',mode='r')
-    # read all lines at once
     template = file.read()
-    # close the file
     file.close()
 
     # Generate the pipeline config

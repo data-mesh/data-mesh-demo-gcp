@@ -12,18 +12,12 @@ jobs:
           default: false
     executor: continuation/default
     working_directory: ~/generate-pipeline
-    docker: # run the steps with Docker
-      # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
+    docker:
       - image: circleci/python:3.9
-        # auth:
-        #   username: mydockerhub-user
-        #   password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-        environment: # environment variables for primary container
+        environment:
           PIPENV_VENV_IN_PROJECT: true
-    steps: # steps that comprise the `build` job
-      - checkout # check out source code to working directory
-      # - run: sudo chown -R circleci:circleci /usr/local/bin
-      # - run: sudo chown -R circleci:circleci /usr/local/lib/python3.9/site-packages
+    steps:
+      - checkout
       - run: 
           command: | 
             ls -la
@@ -33,10 +27,6 @@ jobs:
             sudo pip install pipenv
             pipenv install
             ls -la
-      # - save_cache: # cache Python dependencies using checksum of Pipfile as the cache-key
-      #     key: deps9-{{ .Branch }}-{{ checksum "./.scripts/Pipfile.lock" }}
-      #     paths:
-      #       - "./.scripts/venv"
       - run:
           command: |
             mkdir configs
