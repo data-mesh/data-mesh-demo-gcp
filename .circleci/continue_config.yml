@@ -18,7 +18,8 @@ jobs:
           name: terraform init & plan
           command: |
             ls -la
-            cat /tmp/pipeline-parameters.json
+            ls -la /tmp/workspace
+            cat /tmp/workspace/pipeline-parameters.json
             pwd
             echo ${GCP_CREDENTIALS} | base64 -d > account.json
             ls -a
