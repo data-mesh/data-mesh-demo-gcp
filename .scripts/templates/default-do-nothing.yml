@@ -2,6 +2,8 @@ version: 2.1
 
 jobs:
   do-nothing:
+    docker:
+      - image: alpine:3.7
     steps:
       - run:
           name: do nothing
