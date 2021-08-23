@@ -48,7 +48,8 @@ jobs:
       #       - "./.scripts/venv"
       - run:
           command: |
-            pipenv run python ./.scripts/generate-pipeline-config.py
+            cd ./.scripts
+            pipenv run python generate-pipeline-config.py
       # - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
       #     path: test-results
       #     destination: tr1
