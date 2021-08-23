@@ -1,14 +1,8 @@
 version: 2.1
 
-# the default pipeline parameters, which will be updated according to
-# the results of the path-filtering orb
-parameters:
-  provision:
-    type: boolean
-    default: false
-
 jobs:
-  plan-apply:
+{%- for data_product in data_products %}
+  plan-apply-{{ data_product.name }}:
     # working_directory: /data-infrastructure/data-products/data-product-a
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
@@ -17,19 +11,16 @@ jobs:
       - run:
           name: terraform init & plan
           command: |
-            ls -la
-            ls -la /tmp/workspace
-            cat /tmp/workspace/pipeline-parameters.json
-            pwd
-            echo ${GCP_CREDENTIALS} | base64 -d > account.json
+            cd {{ data_product.dir}}
             ls -a
+            echo ${GCP_CREDENTIALS} | base64 -d > account.json
             terraform init -input=false
             terraform plan -out tfapply -var-file env/dev.tfvars
       - persist_to_workspace:
           root: .
           paths:
             - .
-  apply:
+  apply-{{ data_product.name }}:
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
     steps:
@@ -38,22 +29,25 @@ jobs:
       - run:
           name: terraform
           command: |
-            cd data-infrastructure/data-products/data-product-a
+            cd {{ data_product.dir}}
             ls -a
             terraform apply -auto-approve tfapply
       - persist_to_workspace:
           root: .
           paths:
             - .
+{% endfor %}
 
 workflows:
   plan_approve_apply:
     jobs:
-      - plan-apply
-      - hold-apply:
+      {%- for data_product in data_products %}
+      - plan-apply-{{ data_product.name }}
+      - hold-apply-{{ data_product.name }}:
           type: approval
           requires:
-            - plan-apply
-      - apply:
+            - plan-apply-{{ data_product.name }}
+      - apply-{{ data_product.name }}:
           requires:
-            - hold-apply
+            - hold-apply-{{ data_product.name }}
+      {% endfor %}

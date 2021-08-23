@@ -6,7 +6,7 @@ orbs:
 
 jobs:
   generate-config:
-    # executor: continuation/default
+    executor: continuation/default
     # steps:
     #   - checkout
     #   - python/install-packages:
@@ -15,9 +15,7 @@ jobs:
     #       name: Generate Pipeline generated_config.yml file
     #       command: |
     #         ./scripts/generate-pipeline-config.py
-      # - continuation/continue:
-      #     parameters: '{}'
-      #     configuration_path: configs/generated_config.yml
+      
 
 
     working_directory: ~/generate-pipeline
@@ -48,11 +46,17 @@ jobs:
       #       - "./.scripts/venv"
       - run:
           command: |
+            mkdir configs
             cd ./.scripts
-            pipenv run python generate-pipeline-config.py
+            pipenv run python generate-pipeline-config.py > ../configs/generated_config.yml
+            cd ../
+            cat configs/generated_config.yml
       # - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
       #     path: test-results
       #     destination: tr1
+      - continuation/continue:
+          parameters: '{}'
+          configuration_path: configs/generated_config.yml
 
 workflows:
   setup-workflow:
