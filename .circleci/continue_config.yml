@@ -9,7 +9,7 @@ parameters:
 
 jobs:
   plan-apply:
-    working_directory: /data-infrastructure/data-products/data-product-a
+    # working_directory: /data-infrastructure/data-products/data-product-a
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
     steps:
