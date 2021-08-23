@@ -29,23 +29,24 @@ def get_data_products_configs(gitChanges):
 data_product_configs = get_data_products_configs(changes)
 print('Printing data products configs {}'.format(data_product_configs))
 
-# Create the data for rendering the template
-template_data = {
-    "data_products": data_product_configs
-}
-print("Printing the template data {}".format(template_data))
+if len(data_product_configs) > 0:
+    # Create the data for rendering the template
+    template_data = {
+        "data_products": data_product_configs
+    }
+    print("Printing the template data {}".format(template_data))
 
-# Read the template file 
-# Open a file: file
-file = open('./templates/provision-data-product.yml',mode='r')
-# read all lines at once
-template = file.read()
-# close the file
-file.close()
+    # Read the template file 
+    # Open a file: file
+    file = open('./templates/provision-data-product.yml',mode='r')
+    # read all lines at once
+    template = file.read()
+    # close the file
+    file.close()
 
-# Generate the pipeline config
-j2_template = Template(template)
-output=j2_template.render(template_data)
+    # Generate the pipeline config
+    j2_template = Template(template)
+    output=j2_template.render(template_data)
 
-with open('../configs/generated_config.yml', 'w') as f:
-    f.write(output)
+    with open('../configs/generated_config.yml', 'w') as f:
+        f.write(output)
