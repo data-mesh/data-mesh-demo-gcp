@@ -19,9 +19,10 @@ def get_data_products_configs(gitChanges):
 
         if gitChangeArray[0].startswith('M') | gitChangeArray[0].startswith('A'):
                 print('file path that changed or added {}'.format(gitChangeArray[1]))
+                data_product_dir=gitChangeArray[1].split('/')[2]
                 configValue = {
-                        "name": gitChangeArray[1].split('/')[2],
-                        "dir": gitChangeArray[1]
+                        "name": data_product_dir,
+                        "dir": 'data-infrastructure/data-products/{}'.format(data_product_dir)
                     }
                 configKey = gitChangeArray[1].split('/')[2]
                 configs[configKey] = configValue
