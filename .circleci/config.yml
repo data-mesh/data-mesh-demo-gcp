@@ -27,4 +27,6 @@ workflows:
           # complete. In this case, we are using the parent dynamic
           # configuration itself.
           config-path: .circleci/continue_config.yml
-          workspace_path: '/tmp/workspace'
+          post-steps: # steps to run after steps defined in the job bar
+            - run:
+                command: echo "Test post steps"
