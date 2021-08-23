@@ -44,13 +44,12 @@ jobs:
             sudo pip install pipenv
             pipenv install
       - save_cache: # cache Python dependencies using checksum of Pipfile as the cache-key
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: deps9-{{ .Branch }}-{{ checksum "./.scripts/Pipfile.lock" }}
           paths:
             - "venv"
       - run:
           command: |
-            ls -la ./generate-pipeline
-            pipenv run python /scripts/generate-pipeline-config.py
+            pipenv run python ./.scripts/generate-pipeline-config.py
       # - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
       #     path: test-results
       #     destination: tr1
