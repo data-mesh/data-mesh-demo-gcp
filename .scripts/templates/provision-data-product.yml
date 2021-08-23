@@ -3,7 +3,7 @@ version: 2.1
 jobs:
 {%- for data_product in data_products %}
   plan-apply-{{ data_product.name }}:
-    # working_directory: /data-infrastructure/data-products/data-product-a
+    working_directory: {{ data_product.dir }}
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
     steps:
@@ -11,7 +11,7 @@ jobs:
       - run:
           name: terraform init & plan
           command: |
-            cd {{ data_product.dir}}
+            cd {{ data_product.dir }}
             ls -a
             echo ${GCP_CREDENTIALS} | base64 -d > account.json
             terraform init -input=false
@@ -29,7 +29,7 @@ jobs:
       - run:
           name: terraform
           command: |
-            cd {{ data_product.dir}}
+            cd {{ data_product.dir }}
             ls -a
             terraform apply -auto-approve tfapply
       - persist_to_workspace:
