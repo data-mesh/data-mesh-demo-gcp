@@ -6,18 +6,11 @@ orbs:
 
 jobs:
   generate-config:
+    parameters:
+        run-generated-pipeline:
+          type: boolean
+          default: false
     executor: continuation/default
-    # steps:
-    #   - checkout
-    #   - python/install-packages:
-    #       pkg-manager: pip
-    #   - run: 
-    #       name: Generate Pipeline generated_config.yml file
-    #       command: |
-    #         ./scripts/generate-pipeline-config.py
-      
-
-
     working_directory: ~/generate-pipeline
     docker: # run the steps with Docker
       # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
@@ -51,9 +44,10 @@ jobs:
             pipenv run python generate-pipeline-config.py
             cd ../
             cat configs/generated_config.yml
+            echo 'export RUN_CONTINUATION=false' >> $BASH_ENV
       # If no generated config don't do anything
       - when:
-          condition: [ -f "configs/generated_config.yml" ]
+          condition: $RUN_CONTINUATION
           steps:
             - continuation/continue:
                 parameters: '{}'
