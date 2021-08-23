@@ -36,7 +36,6 @@ jobs:
       - run: 
           command: | 
             ls -la
-            ls -la ./generate-pipeline
       - restore_cache:
       # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: deps9-{{ .Branch }}-{{ checksum "./scripts/Pipfile.lock" }}
