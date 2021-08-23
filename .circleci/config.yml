@@ -36,9 +36,6 @@ jobs:
       - run: 
           command: | 
             ls -la
-      - restore_cache:
-      # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          key: deps9-{{ .Branch }}-{{ checksum "./.scripts/Pipfile.lock" }}
       - run:
           command: |
             cd ./.scripts
@@ -47,7 +44,7 @@ jobs:
       - save_cache: # cache Python dependencies using checksum of Pipfile as the cache-key
           key: deps9-{{ .Branch }}-{{ checksum "./.scripts/Pipfile.lock" }}
           paths:
-            - "venv"
+            - "./.scripts/venv"
       - run:
           command: |
             pipenv run python ./.scripts/generate-pipeline-config.py
