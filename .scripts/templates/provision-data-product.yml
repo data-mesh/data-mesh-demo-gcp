@@ -52,12 +52,10 @@ workflows:
   plan_approve_apply:
     jobs:
       {%- for data_product in data_products %}
-      - validate-{{ data_product.name }}:
-          filters:
-            branches:
-              only:  
-                - user-requests
+      - validate-{{ data_product.name }}
       - plan-apply-{{ data_product.name }}:
+          requires:
+            - validate-{{ data_product.name }}
           filters:
             branches:
               only:  
