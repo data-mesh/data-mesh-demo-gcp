@@ -2,6 +2,17 @@ version: 2.1
 
 jobs:
 {%- for data_product in data_products %}
+  validate-{{data_product.name}}: 
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
+    steps:
+      - checkout
+      - run:
+          name: terraform validate
+          command: |
+            cd {{ data_product.dir }}
+            terraform init -input=false -backend=false
+            terraform validate   
   plan-apply-{{ data_product.name }}:
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:0.13.7
@@ -41,12 +52,25 @@ workflows:
   plan_approve_apply:
     jobs:
       {%- for data_product in data_products %}
+      - validate-{{ data_product.name }}
+          filters:
+            branches:
+              only: user-requests
       - plan-apply-{{ data_product.name }}
+          filters:
+            branches:
+              only: master
       - hold-apply-{{ data_product.name }}:
+          filters:
+            branches:
+              only: master
           type: approval
           requires:
             - plan-apply-{{ data_product.name }}
       - apply-{{ data_product.name }}:
+          filters:
+            branches:
+              only: master
           requires:
             - hold-apply-{{ data_product.name }}
       {% endfor %}
