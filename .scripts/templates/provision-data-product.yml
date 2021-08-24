@@ -53,25 +53,29 @@ workflows:
     jobs:
       {%- for data_product in data_products %}
       - validate-{{ data_product.name }}
-        filters:
-          branches:
-            only: user-requests
+          filters:
+            branches:
+              only:  
+                - user-requests
       - plan-apply-{{ data_product.name }}
-        filters:
-          branches:
-            only: master
+          filters:
+            branches:
+              only:  
+                - master
       - hold-apply-{{ data_product.name }}:
-        requires:
-          - plan-apply-{{ data_product.name }}
-        type: approval
-        filters:
-          branches:
-            only: master
+          requires:
+            - plan-apply-{{ data_product.name }}
+          type: approval
+          filters:
+            branches:
+              only:  
+                - master
       - apply-{{ data_product.name }}:
-        requires:
-          - hold-apply-{{ data_product.name }}
-        filters:
-          branches:
-            only: master
+          requires:
+            - hold-apply-{{ data_product.name }}
+          filters:
+            branches:
+              only:  
+                - master
 
       {% endfor %}
