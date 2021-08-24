@@ -60,7 +60,7 @@ workflows:
           filters:
             branches:
               only:  
-                - master
+                - main
       - hold-apply-{{ data_product.name }}:
           requires:
             - plan-apply-{{ data_product.name }}
@@ -68,13 +68,13 @@ workflows:
           filters:
             branches:
               only:  
-                - master
+                - main
       - apply-{{ data_product.name }}:
           requires:
             - hold-apply-{{ data_product.name }}
           filters:
             branches:
               only:  
-                - master
+                - main
 
       {% endfor %}
