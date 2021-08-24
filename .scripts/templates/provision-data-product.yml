@@ -11,6 +11,7 @@ jobs:
           name: terraform validate
           command: |
             cd {{ data_product.dir }}
+            touch account.json
             terraform init -input=false -backend=false
             terraform validate   
   plan-apply-{{ data_product.name }}:
