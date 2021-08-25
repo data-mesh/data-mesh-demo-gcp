@@ -70,9 +70,6 @@ module "storage_outputs" {
   project_name = var.project_name
 }
 
-
-# TODO Output each storage and dataset paths
-
 output "data_flow_bucket" {
   value = module.compute.*.url
 }
