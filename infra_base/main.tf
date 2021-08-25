@@ -89,7 +89,27 @@ resource "google_storage_bucket" "dp-a-dataflow-temp" {
   force_destroy = true
 }
 
-# DPA Input Port
+# DPA Admin Input/Output Storage policy
+
+data "google_iam_policy" "dp-a-admin" {
+  binding {
+    role = "roles/storage.objectCreator"
+    members = [
+      "serviceAccount:${google_service_account.service_account-dp-a.email}",
+    ]
+  }
+
+  binding {
+    role = "roles/storage.admin"
+    members = [
+      "serviceAccount:data-mesh-base-infra-provision@${var.project_name}.iam.gserviceaccount.com",
+      "serviceAccount:${google_service_account.service_account-dp-a.email}",
+    ]
+  }
+}
+
+# DPA Inputs
+## DPA Input Storage Bucket
 resource "google_storage_bucket" "dp-a-sb" {
   name          = "dp-a-input-${random_string.random_dp_id.id}"
   location      = "US"
@@ -101,9 +121,9 @@ resource "google_storage_bucket_iam_policy" "dp-a-sb-policy" {
   policy_data = data.google_iam_policy.dp-a-admin.policy_data
 }
 
-# DPA Output
+# DPA Outputs
 
-## DPA Bigquery Dataset
+## DPA Output Bigquery Dataset
 resource "google_bigquery_dataset" "dataset-dp-a" {
   dataset_id                  = "dp1ds"
   friendly_name               = "dp1-dataset"
@@ -136,23 +156,6 @@ resource "google_storage_bucket" "dp-a-output-sb" {
   name          = "dp-a-output-${random_string.random_dp_id.id}"
   location      = "US"
   force_destroy = true
-}
-
-data "google_iam_policy" "dp-a-admin" {
-  binding {
-    role = "roles/storage.objectCreator"
-    members = [
-      "serviceAccount:${google_service_account.service_account-dp-a.email}",
-    ]
-  }
-
-  binding {
-    role = "roles/storage.admin"
-    members = [
-      "serviceAccount:data-mesh-base-infra-provision@${var.project_name}.iam.gserviceaccount.com",
-      "serviceAccount:${google_service_account.service_account-dp-a.email}",
-    ]
-  }
 }
 
 resource "google_storage_bucket_iam_policy" "dp-a-output-sb-policy" {
