@@ -47,12 +47,12 @@ if len(data_product_configs) > 0:
     j2_template = Template(template)
     output=j2_template.render(template_data)
 
-    with open('../configs/generated_config.yml', 'w') as f:
+    with open('../configs/generated_pipeline_config.yml', 'w') as f:
         f.write(output)
 
 else:
     default_pipeline = ""
     with open('./templates/default-do-nothing.yml',mode='r') as f:
         default_pipeline = f.read()
-    with open('../configs/generated_config.yml', 'w') as f:
+    with open('../configs/generated_pipeline_config.yml', 'w') as f:
         f.write(default_pipeline)

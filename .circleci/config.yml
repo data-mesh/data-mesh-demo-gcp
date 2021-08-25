@@ -5,7 +5,7 @@ orbs:
   continuation: circleci/continuation@0.1.0
 
 jobs:
-  generate-config:
+  generate-pipeline:
     parameters:
         run-generated-pipeline:
           type: boolean
@@ -33,12 +33,12 @@ jobs:
             cd ./.scripts
             pipenv run python generate-pipeline-config.py
             cd ../
-            cat configs/generated_config.yml
+            cat configs/generated_pipeline_config.yml
       - continuation/continue:
           parameters: '{}'
-          configuration_path: configs/generated_config.yml
+          configuration_path: configs/generated_pipeline_config.yml
 
 workflows:
   setup-workflow:
     jobs:
-      - generate-config
+      - generate-pipeline
